@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+/* CSS untuk Embla Carousel */
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 25%; /* Membuat 4 slide terlihat dalam satu waktu */
+  min-width: 0;
+  padding-left: 1rem; /* Memberi jarak antar slide */
+}
+
+/* Penyesuaian untuk layar lebih kecil */
+@media (max-width: 1024px) {
+  .embla__slide {
+    flex: 0 0 50%; /* 2 slide terlihat */
+  }
+}
+@media (max-width: 640px) {
+  .embla__slide {
+    flex: 0 0 100%; /* 1 slide terlihat */
+  }
+}
