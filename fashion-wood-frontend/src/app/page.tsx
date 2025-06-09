@@ -62,20 +62,21 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-
       <CategoriesSection />
-
       <div className="bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="h-px bg-gray-200"></div>
         </div>
       </div>
 
-      <BestSellersSection />
+      {/* PEMBUNGKUS DITAMBAHKAN DI SINI */}
+      <section className="bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <BestSellersSection variant="homepage" />
+        </div>
+      </section>
 
       <ValuePropsSection />
-
-      {/* Panggil komponen SocialSection di sini */}
       <SocialSection />
     </>
   );

@@ -1,66 +1,92 @@
 // lokasi file: src/components/Navbar.tsx
 
+"use client"; // LANGKAH 1: Menjadikan ini Client Component
+
 import React from "react";
 import Link from "next/link";
-import Image from "next/image"; // <-- Impor komponen Image
+import Image from "next/image";
+import { usePathname } from "next/navigation"; // LANGKAH 2: Impor hook usePathname
 
-const Navbar = () => {
+interface NavbarProps {
+  variant?: "transparent" | "solid";
+}
+
+const Navbar = ({ variant = "transparent" }: NavbarProps) => {
+  const pathname = usePathname(); // LANGKAH 3: Dapatkan path URL saat ini
+
+  // Logika untuk warna tetap sama
+  const isSolid = variant === "solid";
+  const navClasses = isSolid
+    ? "bg-white text-gray-800 shadow-sm"
+    : "bg-transparent text-white";
+  const linkHoverClass = isSolid
+    ? "hover:text-brand-medium"
+    : "hover:text-gray-300";
+  const activeLinkClass = isSolid ? "border-brand-medium" : "border-white";
+  const searchInputClass = isSolid
+    ? "bg-gray-100 placeholder-gray-400 focus:border-brand-medium focus:ring-brand-medium"
+    : "bg-transparent border-white/30 placeholder-white/70 focus:border-white";
+  const searchIconClass = isSolid ? "text-gray-400" : "text-white/70";
+  const iconGroupClasses = isSolid ? "text-gray-500" : "text-white";
+  const dividerClass = isSolid ? "bg-gray-200" : "bg-white opacity-20";
+  const logoSrc = isSolid ? "/logo.png" : "/logo.png";
+
+  // Membuat daftar link agar lebih rapi
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/products", label: "Products" },
+    { href: "/about", label: "About Us" },
+  ];
+
   return (
-    <nav className="absolute top-0 left-0 right-0 z-50 bg-transparent text-white">
+    <nav className={`absolute top-0 left-0 right-0 z-50 ${navClasses}`}>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* === Kolom Kiri === */}
           <div className="flex-1 flex justify-start">
-            {/* PERUBAHAN 1: Menggunakan komponen Image untuk Logo */}
             <Link href="/" className="flex items-center">
               <Image
-                src="/logo.png" // Asumsi nama file Anda adalah ini
+                src={logoSrc}
                 alt="Fashion Wood Logo"
-                width={160} // Sesuaikan lebar logo Anda
-                height={40} // Sesuaikan tinggi logo Anda
-                priority // Membuat logo dimuat lebih cepat
+                width={160}
+                height={40}
+                priority
               />
             </Link>
           </div>
 
-          {/* === Kolom Tengah === */}
+          {/* === Kolom Tengah (Dengan Logika Baru) === */}
           <div className="flex-1 flex justify-center">
             <div className="hidden md:block">
               <ul className="flex items-center space-x-8">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-gray-300 border-b-2 pb-1"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/products" className="hover:text-gray-300">
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-gray-300">
-                    About Us
-                  </Link>
-                </li>
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        // Terapkan class secara dinamis
+                        className={`${linkHoverClass} pb-1 border-b-2 ${isActive ? activeLinkClass : "border-transparent"}`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>
 
           {/* === Kolom Kanan === */}
           <div className="flex-1 flex justify-end items-center space-x-4">
-            {/* PERUBAHAN 2: Search Bar dibuat transparan dengan border */}
             <div className="relative hidden sm:block">
               <input
                 type="text"
                 placeholder="Search Product"
-                className="bg-transparent border border-white/30 rounded-full py-2 pl-4 pr-10 text-sm placeholder-white/70 focus:outline-none focus:border-white w-64"
+                className={`border rounded-full py-2 pl-4 pr-10 text-sm transition-colors w-64 ${searchInputClass}`}
               />
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg
-                  className="w-5 h-5 text-white/70"
+                  className={`w-5 h-5 ${searchIconClass}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -76,10 +102,8 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Ikon Aksi */}
-            <div className="flex items-center space-x-4">
-              {/* ... ikon-ikon tetap sama ... */}
-              <Link href="/orders" className="hover:text-gray-300">
+            <div className={`flex items-center space-x-4 ${iconGroupClasses}`}>
+              <Link href="/orders" className={linkHoverClass}>
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -95,7 +119,7 @@ const Navbar = () => {
                   />
                 </svg>
               </Link>
-              <Link href="/cart" className="hover:text-gray-300">
+              <Link href="/cart" className={linkHoverClass}>
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -111,7 +135,7 @@ const Navbar = () => {
                   />
                 </svg>
               </Link>
-              <Link href="/profile" className="hover:text-gray-300">
+              <Link href="/profile" className={linkHoverClass}>
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -132,8 +156,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* PERUBAHAN 3: Garis pembatas horizontal di bawah navbar */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] h-px bg-white opacity-20"></div>
+      <div
+        className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] h-px ${dividerClass}`}
+      ></div>
     </nav>
   );
 };

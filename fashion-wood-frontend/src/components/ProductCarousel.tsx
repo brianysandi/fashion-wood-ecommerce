@@ -6,7 +6,7 @@ import React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import ProductCard from "./ProductCard";
 import { urlFor } from "@/lib/sanity";
-import type { Product } from "./BestSellerSection"; // Impor tipe dari BestSellersSection
+import type { Product } from "./BestSellerSection";
 
 interface ProductCarouselProps {
   products: Product[];
@@ -14,7 +14,7 @@ interface ProductCarouselProps {
 
 const ProductCarousel = ({ products }: ProductCarouselProps) => {
   const [emblaRef] = useEmblaCarousel({
-    loop: false, // Loop lebih baik dimatikan jika jumlah produk sedikit
+    loop: false,
     align: "start",
     slidesToScroll: 1,
     containScroll: "trimSnaps",
@@ -26,12 +26,13 @@ const ProductCarousel = ({ products }: ProductCarouselProps) => {
         {products.map((product) => (
           <div className="embla__slide" key={product._id}>
             <ProductCard
+              cardType="bestseller"
               slug={product.slug.current}
-              // Kirim URL gambar yang sudah jadi dan nama untuk alt text
               imageUrl={urlFor(product.mainImage).url()}
               name={product.name}
               price={product.price}
               description={product.description}
+              // prop soldCount dihapus dari sini
             />
           </div>
         ))}

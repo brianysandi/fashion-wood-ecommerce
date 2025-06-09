@@ -1,19 +1,17 @@
 // lokasi: src/components/BestSellersSection.tsx
 
-// PERBAIKAN 2: Impor tipe data spesifik untuk gambar Sanity
-import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
-// PERBAIKAN 1: urlFor dihapus dari import ini karena tidak digunakan di sini
 import { client } from "@/lib/sanity";
 import ProductCarousel from "./ProductCarousel";
+import Link from "next/link";
+import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
-// Definisikan tipe data yang lebih lengkap sesuai query
+// Interface Product tetap sama
 export interface Product {
   _id: string;
   name: string;
   slug: {
     current: string;
   };
-  // PERBAIKAN 2: 'any' diganti dengan tipe yang benar
   mainImage: SanityImageSource;
   price: number;
   description: string;
@@ -32,29 +30,50 @@ async function getBestSellers(): Promise<Product[]> {
   return products;
 }
 
-const BestSellersSection = async () => {
+// Props untuk variant
+interface BestSellersSectionProps {
+  variant?: "homepage" | "productsPage";
+}
+
+const BestSellersSection = async ({
+  variant = "homepage",
+}: BestSellersSectionProps) => {
   const products = await getBestSellers();
 
   return (
-    <section className="bg-white py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    // Section dan padding dihapus dari sini, kita kembalikan div biasa
+    <div>
+      {variant === "homepage" ? (
         <div className="text-center">
           <div className="inline-block bg-gray-200 text-gray-600 rounded-full px-4 py-1 text-sm font-semibold tracking-widest">
             BEST SELLERS
           </div>
-          <h2
-            className="mt-4 text-4xl font-bold text-gray-900"
-            style={{ fontFamily: "var(--font-jockey-one)" }}
-          >
+          <h2 className="mt-4 text-4xl font-bold text-gray-900">
             Loved by Customers
           </h2>
         </div>
-
-        <div className="mt-12">
-          <ProductCarousel products={products} />
+      ) : (
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+            Best Sellers
+          </h2>
+          <Link
+            href="/products?filter=bestsellers"
+            className="text-sm font-semibold"
+            style={{
+              color: "#364445",
+              textDecorationLine: "underline",
+            }}
+          >
+            View All
+          </Link>
         </div>
+      )}
+
+      <div className="mt-12">
+        <ProductCarousel products={products} />
       </div>
-    </section>
+    </div>
   );
 };
 
